@@ -65,12 +65,12 @@ public class DataService
             Laegemiddel[] lm = db.Laegemiddler.ToArray();
             Patient[] p = db.Patienter.ToArray();
 
-            ordinationer[0] = new PN(new DateTime(2021, 1, 1), new DateTime(2021, 1, 12), 123, lm[1]);    
-            ordinationer[1] = new PN(new DateTime(2021, 2, 12), new DateTime(2021, 2, 14), 3, lm[0]);    
-            ordinationer[2] = new PN(new DateTime(2021, 1, 20), new DateTime(2021, 1, 25), 5, lm[2]);    
-            ordinationer[3] = new PN(new DateTime(2021, 1, 1), new DateTime(2021, 1, 12), 123, lm[1]);
-            ordinationer[4] = new DagligFast(new DateTime(2021, 1, 10), new DateTime(2021, 1, 12), lm[1], 2, 0, 1, 0);
-            ordinationer[5] = new DagligSkæv(new DateTime(2021, 1, 23), new DateTime(2021, 1, 24), lm[2]);
+            ordinationer[0] = new PN(new DateTime(2023, 1, 1), new DateTime(2023, 1, 12), 123, lm[1]);    
+            ordinationer[1] = new PN(new DateTime(2023, 2, 12), new DateTime(2023, 2, 14), 3, lm[0]);    
+            ordinationer[2] = new PN(new DateTime(2023, 1, 20), new DateTime(2023, 1, 25), 5, lm[2]);    
+            ordinationer[3] = new PN(new DateTime(2023, 1, 1), new DateTime(2023, 1, 12), 123, lm[1]);
+            ordinationer[4] = new DagligFast(new DateTime(2023, 1, 10), new DateTime(2023, 1, 12), lm[1], 2, 0, 1, 0);
+            ordinationer[5] = new DagligSkæv(new DateTime(2023, 1, 23), new DateTime(2023, 1, 24), lm[2]);
             
             ((DagligSkæv) ordinationer[5]).doser = new Dosis[] { 
                 new Dosis(CreateTimeOnly(12, 0, 0), 0.5),
@@ -189,10 +189,11 @@ public class DataService
         PN pn = db.PNs.Include(o => o.laegemiddel).Include(o => o.dates).FirstOrDefault(o => o.OrdinationId == id);
 
         if (pn != null)
-        {
-            
+        { 
             if (dato.dato >= pn.startDen && dato.dato <= pn.slutDen)
             {
+                pn.givDosis(dato);
+                db.SaveChanges();
                 return $"PN-ordination med ID {id} anvendt på dato {dato.dato.ToShortDateString()}.";
             }
             else
@@ -246,7 +247,7 @@ public class DataService
         } catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
-            throw; 
+            throw ex; 
         }
     }
 

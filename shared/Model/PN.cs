@@ -28,25 +28,30 @@ public class PN : Ordination {
     }
 
     public override double doegnDosis() {
-        DateTime minValue = dates.First().dato;
-        DateTime maxValue = dates.First().dato;
 
-        foreach(var date in dates)
+        if (dates.Count > 0)
         {
-            if(date.dato > maxValue)
+            DateTime minValue = dates.First().dato;
+            DateTime maxValue = dates.First().dato;
+
+            foreach (var date in dates)
             {
-                maxValue = date.dato;
+                if (date.dato > maxValue)
+                {
+                    maxValue = date.dato;
+                }
+
+                if (date.dato < minValue)
+                {
+                    minValue = date.dato;
+                }
             }
 
-            if(date.dato < minValue)
-            {
-                minValue = date.dato;
-            }
+            int dage = (int)(maxValue - minValue).TotalDays + 1;
+
+            return samletDosis() / dage;
         }
-
-        int dage = (int)(maxValue - minValue).TotalDays - 1;
-
-        return samletDosis() / dage;
+        return 0;
     }
 
 
