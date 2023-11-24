@@ -186,9 +186,24 @@ public class DataService
 
     public string AnvendOrdination(int id, Dato dato) {
 
-        PN pn = 
+        PN pn = db.PNs.Include(o => o.laegemiddel).Include(o => o.dates).FirstOrDefault(o => o.OrdinationId == id);
 
-        return null!;
+        if (pn != null)
+        {
+            
+            if (dato.dato >= pn.startDen && dato.dato <= pn.slutDen)
+            {
+                return $"PN-ordination med ID {id} anvendt på dato {dato.dato.ToShortDateString()}.";
+            }
+            else
+            {
+                return "Fejl: Datoen er ikke inden for PN-ordinationens gyldighedsperiode.";
+            }
+        }
+        else
+        {
+            return $"Fejl: PN-ordination med ID {id} blev ikke fundet.";
+        }
     }
 
     /// <summary>
@@ -198,9 +213,28 @@ public class DataService
     /// <param name="patient"></param>
     /// <param name="laegemiddel"></param>
     /// <returns></returns>
-	public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId) {
-        // TODO: Implement!
-        return -1;
-	}
-    
+	public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId)
+    {
+        Patient patient = db.Patienter.Find(patientId);
+        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
+
+        double enhedPrKgPrDoegn;
+        if (patient.vaegt < 25)
+        {
+           enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnLet;
+        }
+        else if (patient.vaegt <= 120)
+        {
+            enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnNormal;
+        }
+        else
+        {
+            enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnTung;
+        }
+
+        double anbefaletDosis = patient.vaegt * enhedPrKgPrDoegn;
+
+        return anbefaletDosis;
+    }
+
 }
