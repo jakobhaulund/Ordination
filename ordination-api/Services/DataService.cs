@@ -215,26 +215,39 @@ public class DataService
     /// <returns></returns>
 	public double GetAnbefaletDosisPerDøgn(int patientId, int laegemiddelId)
     {
-        Patient patient = db.Patienter.Find(patientId);
-        Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
+        try {
 
-        double enhedPrKgPrDoegn;
-        if (patient.vaegt < 25)
-        {
-           enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnLet;
-        }
-        else if (patient.vaegt <= 120)
-        {
-            enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnNormal;
-        }
-        else
-        {
-            enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnTung;
-        }
+            Patient patient = db.Patienter.Find(patientId);
+            Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
 
-        double anbefaletDosis = patient.vaegt * enhedPrKgPrDoegn;
+            if (patientId < 0)
+            {
+                throw new ArgumentNullException("Ugyldig patientId. Skal være en positiv værdi.", nameof(patientId));
+            }
 
-        return anbefaletDosis;
+            double enhedPrKgPrDoegn;
+            if (patient.vaegt < 25)
+            {
+                enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnLet;
+            }
+            else if (patient.vaegt <= 120)
+            {
+                enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnNormal;
+            }
+            else
+            {
+                enhedPrKgPrDoegn = laegemiddel.enhedPrKgPrDoegnTung;
+            }
+
+            double anbefaletDosis = patient.vaegt * enhedPrKgPrDoegn;
+
+            return anbefaletDosis;
+        
+        } catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw; 
+        }
     }
 
 }

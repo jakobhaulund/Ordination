@@ -45,29 +45,7 @@ public class ServiceTest
     [ExpectedException(typeof(ArgumentNullException))]
     public void TestAtKodenSmiderEnException()
     {
-        // Arrange
-        Console.WriteLine("Forbereder testen...");
-
-        // Act
-        try
-        {
-            // Kalder metoden med en null-værdi for patientId for at forvente en ArgumentNullException.
-            service.OpretDagligFast(null, 1, 2, 2, 1, 0, DateTime.Now, DateTime.Now.AddDays(3));
-
-            // Assert
-            // Forventer, at en ArgumentNullException bliver kastet.
-            // ExpectedException-attributten vil håndtere selve påstanden for dig.
-            Console.WriteLine("Her kommer der en exception. Testen lykkes ikke, hvis denne linje nås.");
-        }
-        catch (ArgumentNullException ex)
-        {
-            // Her kan du tilføje yderligere assert-statements, hvis nødvendigt.
-            // For eksempel kan du verificere, at den korrekte parameter udløste undtagelsen.
-            Assert.AreEqual("patientId", ex.ParamName, "Forventet ArgumentNullException for patientId");
-
-            // Alternativt kan du blot lade dette område være tomt, da du allerede forventer en exception.
-        }
+        service.GetAnbefaletDosisPerDøgn(-1, 20);
     }
-
 
 }
