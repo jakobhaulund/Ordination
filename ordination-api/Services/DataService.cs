@@ -135,8 +135,14 @@ public class DataService
         Patient patient = db.Patienter.Find(patientId);
         Laegemiddel laegemiddel = db.Laegemiddler.Find(laegemiddelId);
 
-        if (patient != null && laegemiddel != null)
+        if (patient != null && laegemiddel != null && antal > 0)
         {
+            if (antal <= 0)
+            {
+                Console.WriteLine("Antal skal være større end 0.");
+                throw new ArgumentException("Antal skal være større end 0.");
+            }
+
             PN pn = new PN(startDato, slutDato, antal, laegemiddel);
             patient.ordinationer.Add(pn);
             db.SaveChanges();
@@ -157,6 +163,12 @@ public class DataService
 
         if (patient != null && laegemiddel != null)
         {
+            if (antalMorgen <= 0 || antalMiddag <= 0 || antalAften <= 0 || antalNat <= 0)
+            {
+                Console.WriteLine("Antal skal være større end 0.");
+                throw new ArgumentException("Antal skal være større end 0.");
+            }
+
             DagligFast dagligFast = new DagligFast(startDato, slutDato, laegemiddel, antalMorgen, antalMiddag, antalAften, antalNat);
             patient.ordinationer.Add(dagligFast);
             db.SaveChanges();
