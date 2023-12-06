@@ -75,7 +75,11 @@ public class ServiceTest
         Assert.AreEqual(2, service.GetDagligSkæve().Count());
     }
 
-
+    [TestMethod]
+    public void GetAnbefaletDosisPerDøgn()
+    {
+        Assert.AreEqual(9.51, service.GetAnbefaletDosisPerDøgn(1, 1));
+    }
 
 
     [TestMethod]
